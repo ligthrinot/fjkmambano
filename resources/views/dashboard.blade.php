@@ -1,165 +1,170 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Dashboard
+            Dashboard — FJKM Ambano
         </h2>
     </x-slot>
 
-    <div class="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
+    <div class="py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 
-        {{-- Stats --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{-- ══════════════════════════════════════════
+                 SECTION 1 : Membres
+            ══════════════════════════════════════════ --}}
+            <div>
+                <h3 class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-4">
+                    Kristianina
+                </h3>
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
 
-            <div class="bg-white shadow rounded-lg p-6 flex items-center gap-4">
-                <div class="text-4xl">👨‍👩‍👧</div>
-                <div>
-                    <p class="text-gray-400 text-sm">Fianakaviana</p>
-                    <p class="text-3xl font-bold text-gray-800">{{ \App\Models\Fianakaviana::count() }}</p>
-                </div>
-                <a href="{{ route('fianakaviana.index') }}"
-                   class="ml-auto text-blue-600 text-sm hover:underline">Hijery →</a>
-            </div>
+                    {{-- Total membres --}}
+                    <a href="{{ route('kristianina.index') }}"
+                       class="group bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex flex-col gap-2 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl">✝️</span>
+                            <span class="text-xs text-gray-400 group-hover:text-indigo-500 transition-colors">Voir →</span>
+                        </div>
+                        <p class="text-3xl font-bold text-gray-800">{{ $stats['total_kristianina'] }}</p>
+                        <p class="text-sm text-gray-500">Membres total</p>
+                    </a>
 
-            <div class="bg-white shadow rounded-lg p-6 flex items-center gap-4">
-                <div class="text-4xl">✝️</div>
-                <div>
-                    <p class="text-gray-400 text-sm">Kristianina</p>
-                    <p class="text-3xl font-bold text-gray-800">{{ \App\Models\Kristianina::count() }}</p>
-                </div>
-                <a href="{{ route('kristianina.index') }}"
-                   class="ml-auto text-blue-600 text-sm hover:underline">Hijery →</a>
-            </div>
-
-        </div>
-
-        {{-- Stats détaillées Kristianina --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-            <div class="bg-white shadow rounded-lg p-6 flex items-center gap-4">
-                <div class="text-4xl">💧</div>
-                <div>
-                    <p class="text-gray-400 text-sm">Kristianina natao Batisa</p>
-                    <p class="text-3xl font-bold text-green-600">{{ \App\Models\Kristianina::where('batisa', true)->count() }}</p>
-                </div>
-            </div>
-
-            <div class="bg-white shadow rounded-lg p-6 flex items-center gap-4">
-                <div class="text-4xl">🍞</div>
-                <div>
-                    <p class="text-gray-400 text-sm">Kristianina Mpandray</p>
-                    <p class="text-3xl font-bold text-blue-600">{{ \App\Models\Kristianina::where('mpandray', true)->count() }}</p>
-                </div>
-            </div>
-
-        </div>
-
-        {{-- Derniers Kristianina --}}
-        <div class="bg-white shadow rounded-lg overflow-hidden">
-            <div class="flex justify-between items-center px-6 py-4 border-b">
-                <h3 class="text-lg font-semibold text-gray-700">✝️ Kristianina farany niditra</h3>
-                <a href="{{ route('kristianina.create') }}"
-                   class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">
-                    + Manampy
-                </a>
-            </div>
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Anarana</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fanampiny</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fianakaviana</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Daty nidirana</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Batisa</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Mpandray</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    @forelse(\App\Models\Kristianina::with('fianakaviana')->latest()->take(5)->get() as $k)
-                    <tr>
-                        <td class="px-4 py-3">
-                            <a href="{{ route('kristianina.show', $k) }}" class="text-blue-600 hover:underline">
-                                {{ $k->anarana }}
-                            </a>
-                        </td>
-                        <td class="px-4 py-3">{{ $k->fanampiny }}</td>
-                        <td class="px-4 py-3">
-                            @if($k->fianakaviana)
-                                <a href="{{ route('fianakaviana.show', $k->fianakaviana) }}" class="text-blue-600 hover:underline">
-                                    {{ $k->fianakaviana->anarana }}
-                                </a>
-                            @else
-                                -
+                    {{-- Baptisés --}}
+                    <a href="{{ route('batisa.index') }}"
+                       class="group bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex flex-col gap-2 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl">🙏</span>
+                            <span class="text-xs text-gray-400 group-hover:text-indigo-500 transition-colors">Voir →</span>
+                        </div>
+                        <p class="text-3xl font-bold text-blue-600">{{ $stats['batisa_eny'] }}</p>
+                        <p class="text-sm text-gray-500">Vita batisa</p>
+                        <div class="mt-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                            @if($stats['total_kristianina'] > 0)
+                                <div class="h-full bg-blue-400 rounded-full"
+                                     style="width: {{ round($stats['batisa_eny'] / $stats['total_kristianina'] * 100) }}%">
+                                </div>
                             @endif
-                        </td>
-                        <td class="px-4 py-3">{{ $k->daty_nidirana?->format('d/m/Y') ?? '-' }}</td>
-                        <td class="px-4 py-3">
-                            @if($k->batisa)
-                                <span class="text-green-600 font-medium">Eny</span>
+                        </div>
+                        <p class="text-xs text-gray-400">
+                            @if($stats['total_kristianina'] > 0)
+                                {{ round($stats['batisa_eny'] / $stats['total_kristianina'] * 100) }}% ny rehetra
                             @else
-                                <span class="text-red-400">Tsia</span>
+                                —
                             @endif
-                        </td>
-                        <td class="px-4 py-3">
-                            @if($k->mpandray)
-                                <span class="text-green-600 font-medium">Eny</span>
-                            @else
-                                <span class="text-red-400">Tsia</span>
-                            @endif
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="6" class="px-4 py-4 text-center text-gray-400">Tsy misy kristianina</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                        </p>
+                    </a>
 
-        {{-- Dernières Fianakaviana --}}
-        <div class="bg-white shadow rounded-lg overflow-hidden">
-            <div class="flex justify-between items-center px-6 py-4 border-b">
-                <h3 class="text-lg font-semibold text-gray-700">👨‍👩‍👧 Fianakaviana farany niditra</h3>
-                <a href="{{ route('fianakaviana.create') }}"
-                   class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">
-                    + Manampy
-                </a>
+                    {{-- Non baptisés --}}
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex flex-col gap-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl">⏳</span>
+                        </div>
+                        <p class="text-3xl font-bold text-orange-500">{{ $stats['batisa_tsia'] }}</p>
+                        <p class="text-sm text-gray-500">Tsy batisa</p>
+                    </div>
+
+                    {{-- Nouveaux ce mois --}}
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex flex-col gap-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl">🆕</span>
+                        </div>
+                        <p class="text-3xl font-bold text-emerald-600">{{ $stats['nouveaux_ce_mois'] }}</p>
+                        <p class="text-sm text-gray-500">Niditra volana ity</p>
+                    </div>
+
+                </div>
             </div>
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Anarana</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Faritra</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fokontany</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fifandraisana</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kristianina</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    @forelse(\App\Models\Fianakaviana::withCount('kristianinas')->latest()->take(5)->get() as $f)
-                    <tr>
-                        <td class="px-4 py-3">
-                            <a href="{{ route('fianakaviana.show', $f) }}" class="text-blue-600 hover:underline">
-                                {{ $f->anarana }}
-                            </a>
-                        </td>
-                        <td class="px-4 py-3">{{ $f->faritra }}</td>
-                        <td class="px-4 py-3">{{ $f->fokontany }}</td>
-                        <td class="px-4 py-3">{{ $f->fifandraisana ?? '-' }}</td>
-                        <td class="px-4 py-3">
-                            <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-sm">
-                                {{ $f->kristianinas_count }}
-                            </span>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="5" class="px-4 py-4 text-center text-gray-400">Tsy misy fianakaviana</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
 
+            {{-- ══════════════════════════════════════════
+                 SECTION 2 : Fandraisana
+            ══════════════════════════════════════════ --}}
+            <div>
+                <h3 class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-4">
+                    Fandraisana
+                </h3>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+
+                    {{-- Mpandray --}}
+                    <a href="{{ route('fandraisana.index') }}"
+                       class="group bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex flex-col gap-2 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl">🍞</span>
+                            <span class="text-xs text-gray-400 group-hover:text-indigo-500 transition-colors">Voir →</span>
+                        </div>
+                        <p class="text-3xl font-bold text-purple-600">{{ $stats['mpandray_eny'] }}</p>
+                        <p class="text-sm text-gray-500">Mpandray</p>
+                        <div class="mt-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                            @if($stats['total_kristianina'] > 0)
+                                <div class="h-full bg-purple-400 rounded-full"
+                                     style="width: {{ round($stats['mpandray_eny'] / $stats['total_kristianina'] * 100) }}%">
+                                </div>
+                            @endif
+                        </div>
+                        <p class="text-xs text-gray-400">
+                            @if($stats['total_kristianina'] > 0)
+                                {{ round($stats['mpandray_eny'] / $stats['total_kristianina'] * 100) }}% ny rehetra
+                            @else
+                                —
+                            @endif
+                        </p>
+                    </a>
+
+                    {{-- Non mpandray --}}
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex flex-col gap-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl">⏳</span>
+                        </div>
+                        <p class="text-3xl font-bold text-orange-400">{{ $stats['mpandray_tsia'] }}</p>
+                        <p class="text-sm text-gray-500">Tsy mpandray</p>
+                    </div>
+
+                </div>
+            </div>
+
+            {{-- ══════════════════════════════════════════
+                 SECTION 3 : Fianakaviana & Diacres
+            ══════════════════════════════════════════ --}}
+            <div>
+                <h3 class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-4">
+                    Fianakaviana & Diakona
+                </h3>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+
+                    {{-- Familles --}}
+                    <a href="{{ route('fianakaviana.index') }}"
+                       class="group bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex flex-col gap-2 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl">👨‍👩‍👧</span>
+                            <span class="text-xs text-gray-400 group-hover:text-indigo-500 transition-colors">Voir →</span>
+                        </div>
+                        <p class="text-3xl font-bold text-teal-600">{{ $stats['total_fianakaviana'] }}</p>
+                        <p class="text-sm text-gray-500">Fianakaviana</p>
+                    </a>
+
+                    {{-- Diacres actifs --}}
+                    <a href="{{ route('diakona.index') }}"
+                       class="group bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex flex-col gap-2 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl">🕊️</span>
+                            <span class="text-xs text-gray-400 group-hover:text-indigo-500 transition-colors">Voir →</span>
+                        </div>
+                        <p class="text-3xl font-bold text-sky-600">{{ $stats['diakonas_actifs'] }}</p>
+                        <p class="text-sm text-gray-500">Diakona mavitrika</p>
+                    </a>
+
+                    {{-- Anciens actifs --}}
+                    <a href="{{ route('diakona.index') }}"
+                       class="group bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex flex-col gap-2 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl">📋</span>
+                            <span class="text-xs text-gray-400 group-hover:text-indigo-500 transition-colors">Voir →</span>
+                        </div>
+                        <p class="text-3xl font-bold text-rose-600">{{ $stats['loholona_actifs'] }}</p>
+                        <p class="text-sm text-gray-500">Loholona mavitrika</p>
+                    </a>
+
+                </div>
+            </div>
+
+        </div>
     </div>
 </x-app-layout>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Batisa;
 use App\Models\Kristianina;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BatisaController extends Controller
 {
@@ -23,24 +24,28 @@ class BatisaController extends Controller
     }
 
     public function store(Request $request)
-{
-    $validated = $request->validate([
-        'kristianina_id' => 'required|exists:kristianinas,id',
-        'daty'           => 'required|date',
-        'mpanao_batisa'  => 'nullable|string|max:255',
-        'fanamarinana'   => 'nullable|string',
-    ]);
+    {
+        $validated = $request->validate([
+            'kristianina_id' => 'required|exists:kristianinas,id',
+            'daty'           => 'required|date',
+            'mpanao_batisa'  => 'nullable|string|max:255',
+            'fanamarinana'   => 'nullable|string',
+        ]);
 
-    Batisa::create($validated);
+        // Les deux opérations sont atomiques : si l'une échoue, l'autre est annulée.
+        DB::transaction(function () use ($validated) {
+            Batisa::create($validated);
 
-    Kristianina::find($request->kristianina_id)->update([
-        'batisa'      => true,
-        'batisa_daty' => $request->daty,
-    ]);
+            Kristianina::findOrFail($validated['kristianina_id'])->update([
+                'batisa'      => true,
+                'batisa_daty' => $validated['daty'],
+            ]);
+        });
 
-    return redirect()->route('batisa.index')
-        ->with('success', 'Batisa voaforona ary kristianina novaina soamantsara!');
-}
+        return redirect()->route('batisa.index')
+            ->with('success', 'Batisa voaforona ary kristianina novaina soamantsara!');
+    }
+
     public function show(Batisa $batisa)
     {
         $batisa->load('kristianina');
@@ -49,14 +54,17 @@ class BatisaController extends Controller
 
     public function destroy(Batisa $batisa)
     {
+        // Charger la relation avant suppression pour éviter un accès après delete.
         $kristianina = $batisa->kristianina;
 
-        $batisa->delete();
+        DB::transaction(function () use ($batisa, $kristianina) {
+            $batisa->delete();
 
-        $kristianina->update([
-            'batisa'      => false,
-            'batisa_daty' => null,
-        ]);
+            $kristianina->update([
+                'batisa'      => false,
+                'batisa_daty' => null,
+            ]);
+        });
 
         return redirect()->route('batisa.index')
             ->with('success', 'Batisa voafafa ary kristianina novaina!');

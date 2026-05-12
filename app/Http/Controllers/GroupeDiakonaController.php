@@ -20,24 +20,24 @@ class GroupeDiakonaController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'anarana'     => 'required|string|max:255',
             'fanamariana' => 'nullable|string',
         ]);
 
-        GroupeDiakona::create($request->all());
+        GroupeDiakona::create($validated); // ✅ uniquement les champs validés
 
         return redirect()->route('groupe_diakona.index')
                          ->with('success', 'Groupe Diakona voaforona soamantsara!');
     }
 
     public function show(GroupeDiakona $groupeDiakona)
-{
-    $groupeDiakona->load(['diakonas' => function ($query) {
-        $query->where('active', true)->with('kristianina');
-    }]);
-    return view('groupe_diakona.show', compact('groupeDiakona'));
-}
+    {
+        $groupeDiakona->load(['diakonas' => function ($query) {
+            $query->where('active', true)->with('kristianina');
+        }]);
+        return view('groupe_diakona.show', compact('groupeDiakona'));
+    }
 
     public function edit(GroupeDiakona $groupeDiakona)
     {
@@ -46,12 +46,12 @@ class GroupeDiakonaController extends Controller
 
     public function update(Request $request, GroupeDiakona $groupeDiakona)
     {
-        $request->validate([
+        $validated = $request->validate([
             'anarana'     => 'required|string|max:255',
             'fanamariana' => 'nullable|string',
         ]);
 
-        $groupeDiakona->update($request->all());
+        $groupeDiakona->update($validated); // ✅ uniquement les champs validés
 
         return redirect()->route('groupe_diakona.index')
                          ->with('success', 'Groupe Diakona novaina soamantsara!');
@@ -64,6 +64,4 @@ class GroupeDiakonaController extends Controller
         return redirect()->route('groupe_diakona.index')
                          ->with('success', 'Groupe Diakona voafafa!');
     }
-
-    
 }

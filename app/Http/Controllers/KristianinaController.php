@@ -22,29 +22,30 @@ class KristianinaController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'anarana'            => 'required|string|max:255',
-            'fanampiny'          => 'required|string|max:255',
-            'daty_nahaterahana'  => 'nullable|date',
-            'daty_nidirana'      => 'nullable|date',
-            'fiangonana_niaviana'=> 'nullable|string|max:255',
-            'batisa'             => 'nullable|boolean',
-            'batisa_daty'        => 'nullable|date',
-            'batisa_toerana'     => 'nullable|string|max:255',
-            'mpandray'           => 'nullable|boolean',
-            'mpandray_daty'      => 'nullable|date',
-            'mpandray_toerana'   => 'nullable|string|max:255',
-            'fianakaviana_id'    => 'nullable|exists:fianakaviana,id',
-            'andraikitra'        => 'nullable|string|max:255',
-            'laharana'           => 'nullable|string|max:255',
-            'fanamarinana'       => 'nullable|string',
+        $validated = $request->validate([
+            'anarana'             => 'required|string|max:255',
+            'fanampiny'           => 'required|string|max:255',
+            'daty_nahaterahana'   => 'nullable|date',
+            'daty_nidirana'       => 'nullable|date',
+            'fiangonana_niaviana' => 'nullable|string|max:255',
+            'batisa'              => 'nullable|boolean',
+            'batisa_daty'         => 'nullable|date',
+            'batisa_toerana'      => 'nullable|string|max:255',
+            'mpandray'            => 'nullable|boolean',
+            'mpandray_daty'       => 'nullable|date',
+            'mpandray_toerana'    => 'nullable|string|max:255',
+            'fianakaviana_id'     => 'nullable|exists:fianakaviana,id',
+            'andraikitra'         => 'nullable|string|max:255',
+            'laharana'            => 'nullable|string|max:255',
+            'fanamarinana'        => 'nullable|string',
         ]);
 
-        $data = $request->all();
-        $data['batisa']   = $request->has('batisa') ? 1 : 0;
-        $data['mpandray'] = $request->has('mpandray') ? 1 : 0;
+        // Les checkboxes non cochées ne sont pas envoyées par le navigateur,
+        // donc on force explicitement à 0 si absent des données validées.
+        $validated['batisa']   = $request->has('batisa') ? 1 : 0;
+        $validated['mpandray'] = $request->has('mpandray') ? 1 : 0;
 
-        Kristianina::create($data);
+        Kristianina::create($validated); // ✅ uniquement les champs validés
 
         return redirect()->route('kristianina.index')
                          ->with('success', 'Kristianina voaforona soamantsara!');
@@ -64,29 +65,28 @@ class KristianinaController extends Controller
 
     public function update(Request $request, Kristianina $kristianina)
     {
-        $request->validate([
-            'anarana'            => 'required|string|max:255',
-            'fanampiny'          => 'required|string|max:255',
-            'daty_nahaterahana'  => 'nullable|date',
-            'daty_nidirana'      => 'nullable|date',
-            'fiangonana_niaviana'=> 'nullable|string|max:255',
-            'batisa'             => 'nullable|boolean',
-            'batisa_daty'        => 'nullable|date',
-            'batisa_toerana'     => 'nullable|string|max:255',
-            'mpandray'           => 'nullable|boolean',
-            'mpandray_daty'      => 'nullable|date',
-            'mpandray_toerana'   => 'nullable|string|max:255',
-            'fianakaviana_id'    => 'nullable|exists:fianakaviana,id',
-            'andraikitra'        => 'nullable|string|max:255',
-            'laharana'           => 'nullable|string|max:255',
-            'fanamarinana'       => 'nullable|string',
+        $validated = $request->validate([
+            'anarana'             => 'required|string|max:255',
+            'fanampiny'           => 'required|string|max:255',
+            'daty_nahaterahana'   => 'nullable|date',
+            'daty_nidirana'       => 'nullable|date',
+            'fiangonana_niaviana' => 'nullable|string|max:255',
+            'batisa'              => 'nullable|boolean',
+            'batisa_daty'         => 'nullable|date',
+            'batisa_toerana'      => 'nullable|string|max:255',
+            'mpandray'            => 'nullable|boolean',
+            'mpandray_daty'       => 'nullable|date',
+            'mpandray_toerana'    => 'nullable|string|max:255',
+            'fianakaviana_id'     => 'nullable|exists:fianakaviana,id',
+            'andraikitra'         => 'nullable|string|max:255',
+            'laharana'            => 'nullable|string|max:255',
+            'fanamarinana'        => 'nullable|string',
         ]);
 
-        $data = $request->all();
-        $data['batisa']   = $request->has('batisa') ? 1 : 0;
-        $data['mpandray'] = $request->has('mpandray') ? 1 : 0;
+        $validated['batisa']   = $request->has('batisa') ? 1 : 0;
+        $validated['mpandray'] = $request->has('mpandray') ? 1 : 0;
 
-        $kristianina->update($data);
+        $kristianina->update($validated); // ✅ uniquement les champs validés
 
         return redirect()->route('kristianina.index')
                          ->with('success', 'Kristianina novaina soamantsara!');

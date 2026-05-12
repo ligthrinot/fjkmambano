@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Fandraisana;
 use App\Models\Kristianina;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class FandraisanaController extends Controller
 {
@@ -16,7 +17,6 @@ class FandraisanaController extends Controller
 
     public function create()
     {
-        // Doit être baptisé ET pas encore mpandray
         $kristianinas = Kristianina::where('batisa', true)
             ->where('mpandray', false)
             ->orderBy('anarana')
@@ -33,8 +33,8 @@ class FandraisanaController extends Controller
             'fanamarinana'   => 'nullable|string',
         ]);
 
-        // Vérifier qu'il est bien batisé et pas encore mpandray
-        $kristianina = Kristianina::findOrFail($request->kristianina_id);
+        // Vérifications métier avant d'ouvrir la transaction.
+        $kristianina = Kristianina::findOrFail($validated['kristianina_id']);
 
         if (!$kristianina->batisa) {
             return back()->withErrors(['kristianina_id' => 'Tsy vita batisa ilay kristianina.'])->withInput();
@@ -44,13 +44,15 @@ class FandraisanaController extends Controller
             return back()->withErrors(['kristianina_id' => 'Mpandray sahady ilay kristianina.'])->withInput();
         }
 
-        Fandraisana::create($validated);
+        // Les deux opérations sont atomiques : si l'une échoue, l'autre est annulée.
+        DB::transaction(function () use ($validated, $kristianina) {
+            Fandraisana::create($validated);
 
-        // Mettre à jour automatiquement le kristianina
-        $kristianina->update([
-            'mpandray'         => true,
-            'mpandray_daty'    => $request->daty,
-        ]);
+            $kristianina->update([
+                'mpandray'      => true,
+                'mpandray_daty' => $validated['daty'],
+            ]);
+        });
 
         return redirect()->route('fandraisana.index')
             ->with('success', 'Fandraisana voaforona ary kristianina novaina soamantsara!');
@@ -64,15 +66,17 @@ class FandraisanaController extends Controller
 
     public function destroy(Fandraisana $fandraisana)
     {
+        // Charger la relation avant suppression pour éviter un accès après delete.
         $kristianina = $fandraisana->kristianina;
 
-        $fandraisana->delete();
+        DB::transaction(function () use ($fandraisana, $kristianina) {
+            $fandraisana->delete();
 
-        // Remettre le kristianina comme non mpandray
-        $kristianina->update([
-            'mpandray'      => false,
-            'mpandray_daty' => null,
-        ]);
+            $kristianina->update([
+                'mpandray'      => false,
+                'mpandray_daty' => null,
+            ]);
+        });
 
         return redirect()->route('fandraisana.index')
             ->with('success', 'Fandraisana voafafa ary kristianina novaina!');

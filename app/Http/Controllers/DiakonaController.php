@@ -28,23 +28,23 @@ class DiakonaController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'kristianina_id'   => 'required|exists:kristianinas,id',
-            'groupe_diakona_id'=> 'required|exists:groupe_diakonas,id',
-            'karazana'         => 'required|in:Diakona,Loholona',
-            'daty_fidiana'     => 'required|date',
-            'daty_manomboka'   => 'required|date',
-            'daty_farany'      => 'nullable|date|after:daty_manomboka',
-            'fanamariana'      => 'nullable|string',
+        $validated = $request->validate([
+            'kristianina_id'    => 'required|exists:kristianinas,id',
+            'groupe_diakona_id' => 'required|exists:groupe_diakonas,id',
+            'karazana'          => 'required|in:Diakona,Loholona',
+            'daty_fidiana'      => 'required|date',
+            'daty_manomboka'    => 'required|date',
+            'daty_farany'       => 'nullable|date|after:daty_manomboka',
+            'fanamariana'       => 'nullable|string',
         ]);
 
         // Désactiver l'ancien mandat actif si existe
-        Diakona::where('kristianina_id', $request->kristianina_id)
+        Diakona::where('kristianina_id', $validated['kristianina_id'])
                 ->where('active', true)
-                ->update(['active' => false, 'daty_farany' => $request->daty_manomboka]);
+                ->update(['active' => false, 'daty_farany' => $validated['daty_manomboka']]);
 
         Diakona::create([
-            ...$request->all(),
+            ...$validated, // ✅ uniquement les champs validés
             'active' => true,
         ]);
 
@@ -52,13 +52,26 @@ class DiakonaController extends Controller
                          ->with('success', 'Diakona/Loholona voafidy soamantsara!');
     }
 
-    public function show(Kristianina $kristianina)
+    /**
+     * Affiche le détail d'un Diakona ET l'historique complet des mandats
+     * du kristianina associé.
+     *
+     * CORRECTION : on injecte Diakona (cohérent avec la route diakona/{diakona}),
+     * puis on remonte au kristianina depuis la relation, au lieu d'injecter
+     * directement Kristianina ce qui causait un 404 (mauvaise résolution d'ID).
+     */
+    public function show(Diakona $diakona)
     {
+        $diakona->load('groupeDiakona');
+
+        $kristianina = $diakona->kristianina;
+
         $historique = Diakona::with('groupeDiakona')
                               ->where('kristianina_id', $kristianina->id)
                               ->orderByDesc('daty_fidiana')
                               ->get();
-        return view('diakona.show', compact('kristianina', 'historique'));
+
+        return view('diakona.show', compact('diakona', 'kristianina', 'historique'));
     }
 
     public function edit(Diakona $diakona)
@@ -71,19 +84,19 @@ class DiakonaController extends Controller
 
     public function update(Request $request, Diakona $diakona)
     {
-        $request->validate([
-            'kristianina_id'   => 'required|exists:kristianinas,id',
-            'groupe_diakona_id'=> 'required|exists:groupe_diakonas,id',
-            'karazana'         => 'required|in:Diakona,Loholona',
-            'daty_fidiana'     => 'required|date',
-            'daty_manomboka'   => 'required|date',
-            'daty_farany'      => 'nullable|date|after:daty_manomboka',
-            'active'           => 'boolean',
-            'fanamariana'      => 'nullable|string',
+        $validated = $request->validate([
+            'kristianina_id'    => 'required|exists:kristianinas,id',
+            'groupe_diakona_id' => 'required|exists:groupe_diakonas,id',
+            'karazana'          => 'required|in:Diakona,Loholona',
+            'daty_fidiana'      => 'required|date',
+            'daty_manomboka'    => 'required|date',
+            'daty_farany'       => 'nullable|date|after:daty_manomboka',
+            'active'            => 'boolean',
+            'fanamariana'       => 'nullable|string',
         ]);
 
         $diakona->update([
-            ...$request->all(),
+            ...$validated, // ✅ uniquement les champs validés
             'active' => $request->has('active') ? 1 : 0,
         ]);
 

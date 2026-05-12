@@ -20,16 +20,16 @@ class FianakavianaController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'anarana'      => 'required|string|max:255',
-            'adressy'      => 'required|string|max:255',
-            'faritra'      => 'required|string|max:255',
-            'fokontany'    => 'required|string|max:255',
-            'fifandraisana'=> 'nullable|string|max:255',
-            'fanamarihana' => 'nullable|string',
+        $validated = $request->validate([
+            'anarana'       => 'required|string|max:255',
+            'adressy'       => 'required|string|max:255',
+            'faritra'       => 'required|string|max:255',
+            'fokontany'     => 'required|string|max:255',
+            'fifandraisana' => 'nullable|string|max:255',
+            'fanamarihana'  => 'nullable|string',
         ]);
 
-        Fianakaviana::create($request->all());
+        Fianakaviana::create($validated); // ✅ uniquement les champs validés
 
         return redirect()->route('fianakaviana.index')
                          ->with('success', 'Fianakaviana voaforona soamantsara!');
@@ -48,16 +48,16 @@ class FianakavianaController extends Controller
 
     public function update(Request $request, Fianakaviana $fianakaviana)
     {
-        $request->validate([
-            'anarana'      => 'required|string|max:255',
-            'adressy'      => 'required|string|max:255',
-            'faritra'      => 'required|string|max:255',
-            'fokontany'    => 'required|string|max:255',
-            'fifandraisana'=> 'nullable|string|max:255',
-            'fanamarihana' => 'nullable|string',
+        $validated = $request->validate([
+            'anarana'       => 'required|string|max:255',
+            'adressy'       => 'required|string|max:255',
+            'faritra'       => 'required|string|max:255',
+            'fokontany'     => 'required|string|max:255',
+            'fifandraisana' => 'nullable|string|max:255',
+            'fanamarihana'  => 'nullable|string',
         ]);
 
-        $fianakaviana->update($request->all());
+        $fianakaviana->update($validated); // ✅ uniquement les champs validés
 
         return redirect()->route('fianakaviana.index')
                          ->with('success', 'Fianakaviana novaina soamantsara!');
