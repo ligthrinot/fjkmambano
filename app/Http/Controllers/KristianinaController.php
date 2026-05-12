@@ -52,6 +52,7 @@ class KristianinaController extends Controller
 
     public function show(Kristianina $kristianina)
     {
+        $kristianina->load(['fianakaviana', 'diakonas.groupeDiakona', 'batisaRecord']);
         return view('kristianina.show', compact('kristianina'));
     }
 

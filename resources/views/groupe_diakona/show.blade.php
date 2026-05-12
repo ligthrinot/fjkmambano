@@ -24,7 +24,7 @@
             </div>
         </div>
 
-        {{-- Liste Diakona --}}
+        {{-- Liste Diakona actifs --}}
         <div class="bg-white shadow rounded-lg overflow-hidden">
             <div class="flex justify-between items-center px-6 py-4 border-b">
                 <h3 class="text-lg font-semibold text-gray-700">
@@ -63,7 +63,7 @@
                                 <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded text-sm">Loholona</span>
                             @endif
                         </td>
-                        <td class="px-4 py-3">{{ $diakona->daty_nofidiana?->format('d/m/Y') ?? '-' }}</td>
+                        <td class="px-4 py-3">{{ $diakona->daty_fidiana?->format('d/m/Y') ?? '-' }}</td>
                         <td class="px-4 py-3 flex gap-2">
                             <a href="{{ route('diakona.edit', $diakona) }}"
                                class="text-yellow-600 hover:underline">Hanova</a>

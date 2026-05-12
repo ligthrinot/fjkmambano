@@ -39,12 +39,20 @@ class Kristianina extends Model
     }
 
     public function diakonas()
-{
-    return $this->hasMany(Diakona::class);
-}
+    {
+        return $this->hasMany(Diakona::class);
+    }
 
-public function diakonaActif()
-{
-    return $this->hasOne(Diakona::class)->where('active', true);
-}
+    public function diakonaActif()
+    {
+        return $this->hasOne(Diakona::class)->where('active', true);
+    }
+    public function batisaRecord()
+    {
+        return $this->hasOne(Batisa::class);
+    }
+    public function fandraisanaRecord()
+    {
+        return $this->hasOne(Fandraisana::class);
+    }
 }

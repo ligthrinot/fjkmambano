@@ -33,7 +33,9 @@ class GroupeDiakonaController extends Controller
 
     public function show(GroupeDiakona $groupeDiakona)
 {
-    $groupeDiakona->load('diakonas.kristianina');
+    $groupeDiakona->load(['diakonas' => function ($query) {
+        $query->where('active', true)->with('kristianina');
+    }]);
     return view('groupe_diakona.show', compact('groupeDiakona'));
 }
 
